@@ -17,7 +17,10 @@ connectDB();
 
 // Import Routes
 const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
+
 //const { connect } = require('./routes/bootcamps');
+
 
 
 
@@ -35,6 +38,7 @@ if (process.env.NODE_ENV === 'development'){
 
 // Mount Router
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 // Error Handler; placed after Router
 app.use(errorHandler);

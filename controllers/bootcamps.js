@@ -42,7 +42,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 
     // Extra step?  Do I need this?
     // Finding resource 
-    query = Bootcamp.find(JSON.parse(queryStr));
+    query = Bootcamp.find(JSON.parse(queryStr)).populate('courses');
 
 
     // Select Fields
@@ -233,10 +233,13 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     //     next(err);
     // }
  
-        const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+        const bootcamp = await Bootcamp.findById(req.params.id);
         if(!bootcamp){
             return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404));
         }
+
+        bootcamp.remove();
+
         res.status(200)
         .json(
             {
