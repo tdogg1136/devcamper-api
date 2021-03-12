@@ -6,14 +6,18 @@ const {
     updateBootcamp, 
     createBootcamp, 
     deleteBootcamp,
-    getBootcampsInRadius
+    getBootcampsInRadius,
+    bootcampPhotoUpload
     } 
     = require('../controllers/bootcamps');
+
+const Bootcamp = require('../models/Bootcamp');
+
+const advancedResults = require('../middleware/advancedResults');
 
 
 // Include other resource routers
 const courseRouter = require('./courses');
-
 
 const router = express.Router();
 
@@ -22,14 +26,16 @@ const router = express.Router();
 router.use('/:bootcampId/courses', courseRouter);
 
 router.route('/radius/:zipcode/:distance')
-    .get(getBootcampsInRadius);
+      .get(getBootcampsInRadius);
+
+router.route('/:id/photo').put(bootcampPhotoUpload);
 
 
 // Use the router.route mehtod to designate the path ('/') and  method
 // the .get and the .post mentod (b/c the use the same route 
 // i.e no :/id required) to call each API function in the controller  
 router.route('/')
-    .get(getBootcamps)
+    .get(advancedResults(Bootcamp, 'courses'), getBootcamps)
     .post(createBootcamp)
 
 // Use the router.route mehtod to designate the path ('/:id') and  method
