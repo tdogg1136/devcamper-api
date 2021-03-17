@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
 const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 
@@ -20,6 +21,7 @@ connectDB();
 // Import Routes
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
+const auth = require('./routes/auth');
 
 //const { connect } = require('./routes/bootcamps');
 
@@ -31,6 +33,9 @@ const app = express();
 
 // Body parser
 app.use(express.json());
+
+// Cookie Parser
+app.use(cookieParser());
 
 // Dev Logging Middleware
 // app.use(logger)
@@ -48,6 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount Router
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
 
 // Error Handler; placed after Router
 app.use(errorHandler);

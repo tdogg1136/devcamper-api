@@ -16,6 +16,9 @@ const Bootcamp = require('../models/Bootcamp');
 const advancedResults = require('../middleware/advancedResults');
 
 
+const { protect, authorize } = require('../middleware/auth');
+
+
 // Include other resource routers
 const courseRouter = require('./courses');
 
@@ -28,7 +31,10 @@ router.use('/:bootcampId/courses', courseRouter);
 router.route('/radius/:zipcode/:distance')
       .get(getBootcampsInRadius);
 
-router.route('/:id/photo').put(bootcampPhotoUpload);
+router.route('/:id/photo').put(protect, authorize('publisher', 'admin'), bootcampPhotoUpload);
+
+
+
 
 
 // Use the router.route mehtod to designate the path ('/') and  method
@@ -36,15 +42,15 @@ router.route('/:id/photo').put(bootcampPhotoUpload);
 // i.e no :/id required) to call each API function in the controller  
 router.route('/')
     .get(advancedResults(Bootcamp, 'courses'), getBootcamps)
-    .post(createBootcamp)
+    .post(protect, authorize('publisher', 'admin'), createBootcamp)
 
 // Use the router.route mehtod to designate the path ('/:id') and  method
 // the .get, .put  and the .delete mentod (b/c the use the same route 
 // i.e :/id required) to call each API function in the controller    
 router.route('/:id')
     .get(getBootcamp)
-    .put(updateBootcamp)
-    .delete(deleteBootcamp)
+    .put(protect, authorize('publisher', 'admin'), updateBootcamp)
+    .delete(protect, authorize('publisher', 'admin'), deleteBootcamp)
 
 // // Return All Bootcamps
 // router.get('/', (req, res, next) => {
