@@ -8,6 +8,7 @@ const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
+const mongoSanitize = require('express-mongo-sanitize');
 
 
 // Load  ENV configuration file
@@ -48,6 +49,9 @@ if (process.env.NODE_ENV === 'development'){
 
 // Use file upload package
 app.use(fileupload());
+
+// Sanitize data
+app.use(mongoSanitize());
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
