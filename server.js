@@ -9,6 +9,11 @@ const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss  = require('xss-clean');
+const rateLimit  = require('express-rate-limit');
+const hpp  = require('hpp');
+const cors = require('cors')
 
 
 // Load  ENV configuration file
@@ -52,6 +57,31 @@ app.use(fileupload());
 
 // Sanitize data
 app.use(mongoSanitize());
+
+// Secure Express app by setting various HTTP headers
+app.use(helmet());
+
+// Prevent Cross Site scripting
+app.use(xss());
+
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 100
+});
+
+app.use(limiter);
+
+// Prevent http param pollution
+app.use(hpp());
+
+// Allow Cross Origin Requests
+app.use(cors());
+
+
+// Rate Limiting
+app.use(xss());
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
